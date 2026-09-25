@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Concerti · Andrea Rufo</title>
+<meta name="description" content="I concerti a cui ho partecipato.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root { --bg:#f4f1ea; --fg:#141414; --muted:#6b675f; --line:#d9d4c7; --accent:#d4341c; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#111; --fg:#f1ede4; --muted:#8d887d; --line:#2a2825; --accent:#ff5a3c; } }
+  * { box-sizing:border-box; margin:0; }
+  body { background:var(--bg); color:var(--fg); font:16px/1.5 Inter, system-ui, sans-serif; padding:0 16px; }
+  main { max-width:760px; margin:0 auto; padding:72px 0 96px; }
+  h1 { font:400 clamp(64px,16vw,140px)/.9 Anton, Impact, sans-serif; text-transform:uppercase; letter-spacing:-.01em; }
+  h1 span { color:var(--accent); }
+  .sub { color:var(--muted); margin:16px 0 56px; }
+  .year { display:grid; grid-template-columns:96px 1fr; gap:0 24px; border-top:2px solid var(--fg); padding-top:12px; margin-bottom:40px; }
+  .year h2 { font:400 32px/1 Anton, Impact, sans-serif; color:var(--accent); position:sticky; top:16px; align-self:start; }
+  ol { list-style:none; padding:0; }
+  li { padding:12px 0; border-bottom:1px solid var(--line); }
+  li:last-child { border-bottom:0; }
+  .artist { font-weight:600; font-size:20px; line-height:1.25; }
+  .meta { color:var(--muted); font-size:14px; margin-top:2px; }
+  footer { color:var(--muted); font-size:14px; }
+  @media (max-width:520px) { .year { grid-template-columns:1fr; } .year h2 { position:static; margin-bottom:4px; } }
+</style>
+</head>
+<body>
+<main>
+  <h1>Concerti<span>.</span></h1>
+  <p class="sub" id="sub"></p>
+  <div id="list"></div>
+  <footer><a href="https://rufo.dev" style="color:inherit">rufo.dev</a></footer>
+</main>
+<script>
+// data (YYYY-MM-DD) — l'ordinamento è automatico
+const concerti = [
+  ["2024-10-26", "The White Buffalo", "Roma, Largo Venue"],
+  ["2024-10-03", "David Gilmour", "Roma, Circo Massimo"],
+  ["2024-05-29", "Metallica + Five Finger Death Punch", "Milano, Ippodromo La Maura"],
+  ["2023-07-08", "Guns N’ Roses", "Roma, Circo Massimo"],
+  ["2016-05-07", "Elio e le Storie Tese", "Roma, PalaEur"],
+  ["2015-06-23", "Slash featuring Myles Kennedy and The Conspirators", "Roma, Ippodromo Capannelle"],
+  ["2014-11-18", "Fabi – Silvestri – Gazzè", "Roma, PalaEur"],
+  ["2013-11-11", "Alter Bridge + Halestorm", "Roma, Atlantico"],
+  ["2013-07-09", "Rammstein", "Roma, Ippodromo Capannelle"],
+  ["2013-04-29", "Niccolò Fabi (con Roberto Angelini e Pier Cortese)", "Latina, Teatro Cafaro"],
+  ["2011-02-26", "Rhapsody of Fire", "Roma, Atlantico"],
+  ["2010-02-28", "Airbourne", "Roma, Alpheus"],
+  ["2009-02-27", "Lordi", "Roma, Alpheus"],
+  ["2006-12-02", "Iron Maiden + Trivium", "Milano, DatchForum"],
+  ["2006-07-11", "Deep Purple", "Latina, Stadio Francioni"],
+  ["2005-10-08", "Labyrinth", "Latina, Transylvania Live"],
+  ["2004-07-06", "G3 – Joe Satriani, Steve Vai, Robert Fripp", "Roma, Foro Italico"],
+  ["2002-06-12", "Roger Waters", "Roma, Stadio Flaminio"],
+];
+
+const fmt = new Intl.DateTimeFormat("it-IT", { day: "numeric", month: "long" });
+const esc = s => s.replace(/[&<>"]/g, c => `&#${c.charCodeAt(0)};`);
+const byYear = {};
+concerti.sort((a, b) => b[0].localeCompare(a[0]))
+  .forEach(c => (byYear[c[0].slice(0, 4)] ??= []).push(c));
+
+document.getElementById("list").innerHTML = Object.keys(byYear).sort().reverse().map(y => `
+  <section class="year"><h2>${y}</h2><ol>${byYear[y].map(([d, a, p]) => `
+    <li><div class="artist">${esc(a)}</div><div class="meta"><time datetime="${d}">${fmt.format(new Date(d))}</time> · ${esc(p)}</div></li>`).join("")}
+  </ol></section>`).join("");
+
+const years = Object.keys(byYear);
+document.getElementById("sub").textContent =
+  `${concerti.length} concerti dal ${years.at(-1) ?? ""} al ${years[0] ?? ""}.`;
+</script>
+</body>
+</html>
