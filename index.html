@@ -71,7 +71,7 @@ document.getElementById("list").innerHTML = Object.keys(byYear).sort().reverse()
 
 const years = Object.keys(byYear);
 document.getElementById("sub").textContent =
-  `${concerti.length} concerti dal ${years.at(-1) ?? ""} al ${years[0] ?? ""}.`;
+  `${concerti.length} concerti dal ${years[0] ?? ""} al ${years.at(-1) ?? ""}.`;
 </script>
 </body>
 </html>
